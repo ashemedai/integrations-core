@@ -34,9 +34,9 @@ class IbmMqCheck(AgentCheck):
         try:
             import pymqi
             self.pymqi = pymqi
-        except ImportError:
-            self.log.error("You need to install pymqi")
-            raise errors.PymqiException("You need to install pymqi")
+        except ImportError as e:
+            self.log.error("You need to install pymqi: {}".format(e))
+            raise errors.PymqiException("You need to install pymqi: {}".format(e))
 
         metrics = Metrics()
 
