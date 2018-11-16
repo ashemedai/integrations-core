@@ -44,7 +44,8 @@ class CommandLine:
             log.warning(self.docker_container)
             container = client.containers.get(self.docker_container)
             err, result = container.exec_run(
-                " ".join(self._mk_cmd(cmd))
+                " ".join(self._mk_cmd(cmd)),
+                tty=True
             )
             log.warning("docker results -- err: {} result: {}".format(err, result))
         else:
