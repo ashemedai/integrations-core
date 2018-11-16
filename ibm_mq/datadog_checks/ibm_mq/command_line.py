@@ -6,14 +6,6 @@ import os
 import re
 import logging
 
-try:
-    # Since the tests run in a container,
-    # we need to exec within that container to get the cli stats
-    # Docker is not shipped with the agent and this should not be used outside of the testing
-    import docker
-except ImportError:
-    docker = None
-
 from datadog_checks.utils.subprocess_output import get_subprocess_output
 
 log = logging.getLogger(__file__)
@@ -31,25 +23,13 @@ class CommandLine:
         self.cmd_path = os.path.join(self.config.mq_installation_dir, 'bin', 'runmqsc')
         self.queue_manager_name = self.config.queue_manager_name
 
-        self.use_docker = False
-        if self.docker_container and docker:
-            self.use_docker = True
-
     def _run_command(self, cmd):
-        result = None
-        err = None
-        if self.use_docker:
-            log.warning('using docker')
-            client = docker.from_env()
-            log.warning(self.docker_container)
-            container = client.containers.get(self.docker_container)
-            err, result = container.exec_run(
-                " ".join(self._mk_cmd(cmd)),
-                tty=True
-            )
-            log.warning("docker results -- err: {} result: {}".format(err, result))
-        else:
-            result, err, _ = get_subprocess_output(self._mk_cmd(cmd), log, False)
+
+        result, err, _ = get_subprocess_output(
+            self._mk_cmd(cmd),
+            log,
+            False
+        )
 
         return result, err
 
