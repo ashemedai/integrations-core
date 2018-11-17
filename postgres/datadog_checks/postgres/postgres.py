@@ -100,7 +100,6 @@ class PostgreSql(AgentCheck):
         ],
         'metrics': {
             'lock_count': ('postgresql.locks', GAUGE),
-            'ungranted_locks': ('postgresql.ungranted_locks'),
         },
         'query': """
 SELECT mode,
